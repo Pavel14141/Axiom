@@ -2,6 +2,11 @@ export interface TelegramWebApp {
   ready: () => void
   expand: () => void
   close: () => void
+  BackButton?: {
+    show: () => void
+    hide: () => void
+    onClick: (callback: () => void) => void
+  }
   MainButton: {
     text: string
     color: string
@@ -11,6 +16,9 @@ export interface TelegramWebApp {
     show: () => void
     hide: () => void
     onClick: (callback: () => void) => void
+    setText: (text: string) => void
+    enable: () => void
+    disable: () => void
   }
   HapticFeedback: {
     impactOccurred: (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => void
@@ -24,8 +32,19 @@ export interface TelegramWebApp {
     link_color?: string
     button_color?: string
     button_text_color?: string
+    secondary_bg_color?: string
   }
   colorScheme: 'light' | 'dark'
+  initData: string
+  initDataUnsafe: {
+    user?: {
+      id: number
+      first_name: string
+      last_name?: string
+      username?: string
+      language_code?: string
+    }
+  }
 }
 
 declare global {
@@ -50,4 +69,12 @@ export const initTelegramWebApp = () => {
     tg.expand()
   }
   return tg
+}
+
+export const useTelegramTheme = () => {
+  const tg = getTelegramWebApp()
+  return {
+    colorScheme: tg?.colorScheme || 'light',
+    themeParams: tg?.themeParams || {},
+  }
 }
