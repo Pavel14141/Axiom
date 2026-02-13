@@ -1,5 +1,5 @@
 declare module 'react-katex' {
-  import { ComponentType } from 'react'
+  import type { ComponentType } from 'react'
 
   export interface KatexProps {
     math: string
