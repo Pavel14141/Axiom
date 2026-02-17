@@ -9,6 +9,12 @@ interface SubjectCardProps {
   subject: Subject
 }
 
+const subjectColors: Record<string, string> = {
+  'Физика': 'from-blue-400 to-cyan-400 dark:from-blue-500 dark:to-cyan-500',
+  'Алгебра': 'from-purple-400 to-pink-400 dark:from-purple-500 dark:to-pink-500',
+  'Геометрия': 'from-orange-400 to-red-400 dark:from-orange-500 dark:to-red-500',
+}
+
 export function SubjectCard({ subject }: SubjectCardProps) {
   const handleClick = () => {
     const tg = getTelegramWebApp()
@@ -17,12 +23,15 @@ export function SubjectCard({ subject }: SubjectCardProps) {
     }
   }
 
+  const gradient = subjectColors[subject.name] || 'from-gray-400 to-gray-500'
+
   return (
     <Link href={`/subjects/${subject.id}`} onClick={handleClick}>
-      <Card className="hover:bg-accent transition-colors cursor-pointer h-full">
-        <CardHeader>
-          <div className="text-4xl mb-2">{subject.icon}</div>
-          <CardTitle className="text-xl">{subject.name}</CardTitle>
+      <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer h-full">
+        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-90`} />
+        <CardHeader className="relative z-10 text-white">
+          <div className="text-5xl mb-3 drop-shadow-lg">{subject.icon}</div>
+          <CardTitle className="text-xl font-bold drop-shadow">{subject.name}</CardTitle>
         </CardHeader>
       </Card>
     </Link>

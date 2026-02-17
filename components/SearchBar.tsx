@@ -1,6 +1,7 @@
 'use client'
 
 import { Input } from '@/components/ui/input'
+import { getTelegramWebApp } from '@/lib/telegram'
 import type { Topic } from '@/lib/types'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -30,6 +31,10 @@ export function SearchBar({ topics }: SearchBarProps) {
   }, [query, topics])
 
   const handleSelect = (topicId: string) => {
+    const tg = getTelegramWebApp()
+    if (tg?.HapticFeedback) {
+      tg.HapticFeedback.impactOccurred('light')
+    }
     router.push(`/topics/${topicId}`)
     setQuery('')
     setIsOpen(false)
@@ -37,23 +42,34 @@ export function SearchBar({ topics }: SearchBarProps) {
 
   return (
     <div className="relative">
-      <Input
-        type="search"
-        placeholder="Поиск по темам..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="w-full"
-      />
+      <div className="relative">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xl">
+          🔍
+        </div>
+        <Input
+          type="search"
+          placeholder="Поиск по темам..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="w-full pl-12 h-12 text-base rounded-xl border-2 focus:border-primary shadow-sm"
+        />
+      </div>
       {isOpen && (
-        <div className="absolute top-full mt-2 w-full bg-card border rounded-lg shadow-lg z-10 max-h-64 overflow-y-auto">
-          {results.map((topic) => (
+        <div className="absolute top-full mt-2 w-full bg-card border-2 border-primary/20 rounded-xl shadow-xl z-10 max-h-80 overflow-y-auto">
+          {results.map((topic, index) => (
             <button
               key={topic.id}
               onClick={() => handleSelect(topic.id)}
-              className="w-full text-left px-4 py-3 hover:bg-accent transition-colors border-b last:border-b-0"
+              className="w-full text-left px-4 py-4 hover:bg-primary/5 transition-all border-b last:border-b-0 flex items-center gap-3 group"
               type="button"
             >
-              <p className="font-medium">{topic.title}</p>
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                {index + 1}
+              </div>
+              <p className="font-medium flex-1">{topic.title}</p>
+              <div className="text-muted-foreground group-hover:text-primary transition-colors">
+                →
+              </div>
             </button>
           ))}
         </div>
